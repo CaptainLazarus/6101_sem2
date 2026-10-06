@@ -20,9 +20,11 @@ The professor’s requirements are:
 - use diagrams and concrete examples to explain the mechanisms;
 - spend roughly the first half on background and motivation.
 
-Do not make the presentation automatically. The user will make the slides,
-with help understanding the paper and possibly later help planning or checking
-the presentation.
+The user initially wanted to make the slides themselves, then explicitly
+authorized a subagent to make a first draft. They have now requested actual
+slides: create an editable 20-minute deck with speaker notes and diagrams,
+which they can revise using their own understanding. Prefer a usable draft
+quickly over extensive polishing.
 
 ## How to continue learning
 
@@ -93,9 +95,10 @@ and queueing behaviour. It can be lossless or lossy.
 - **RTO:** Retransmission Timeout. If an expected acknowledgement does not
   arrive before a timer expires, assume loss and retransmit. It is slower and
   less precise than an immediate loss notification.
-- **PFC:** Priority Flow Control. If a switch queue fills, it sends PAUSE
-  upstream; after the queue drains, it sends RESUME. PFC tries to make the
-  fabric lossless by preventing drops.
+- **PFC:** Priority-based Flow Control. Before buffer overflow, crossing a
+  threshold triggers an upstream PAUSE for a priority on a link, affecting
+  the many flows sharing that priority. PFC tries to prevent packet drops;
+  transmission resumes when the pause is cleared or expires.
 
 ## Path and switch terms
 
@@ -124,19 +127,29 @@ The practical difficulty is doing it at high speed while handling packet
 reordering, congestion, slow or false timeouts, hardware memory limits, and
 low RNIC processing overhead.
 
-## Terms still to learn from the abstract
+## Current reading position and preferences
 
-- data plane versus control plane;
-- DCP transport architecture;
-- DCP-Switch and DCP-RNIC;
-- lossless control plane;
-- header-only retransmission;
-- bitmap-free packet tracking;
-- P4 programmable switch;
-- FPGA prototype;
-- SOTA (state of the art).
+Finished the abstract and Introduction. The first paragraph of Section 2.1,
+“Lossless RDMA Network,” has just been output; it has not yet been discussed.
+The user asks to speed up, keeping one paragraph at a time and explaining
+only terms they ask about. Output local paper paragraphs as plain text, not
+blockquotes. “k” means return from a tangent, or advance if not in a tangent.
+
+Already discussed: P4, FPGA (accepted as a black box), control/data planes,
+PFC and shared priorities, egress queues, header-only retransmission,
+out-of-order memory placement, bitmap-free counters, exactly-once assumptions,
+and evaluation terminology. Headers are not guaranteed to arrive in order;
+“lossless control plane” means HO loss is very rare under the stated conditions,
+not impossible. Normal packets remain whole; only congestion triggers trimming.
+
+The real testbed uses 16 FPGA RNICs, two P4 switches, and 100-Gbps links,
+including a real 10-km optical link test. The 100/1000-km scenarios are simulated.
 
 ## Current repository
 
-`pldi16.pdf` is the paper. `notes.md` contains the initial vocabulary notes.
+`pldi16.pdf` is the paper. `notes.md` contains the glossary, explanations,
+deferred questions, and day schedule. `networking_reference.md` and
+`dcp_reference.md` are future reference material, not a new reading assignment.
+`presentation_draft.md` contains the timed 20-slide outline, with source-checked
+numbers. A subagent is producing the actual deck from this outline.
 This file is the handoff context for continuing in a new conversation.
